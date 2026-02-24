@@ -36,15 +36,15 @@ Because these are large capacity models trained on CIFAR-100 (which has only 500
 
 ### 1. ResNet-18
 ResNet-18 achieved the highest validation accuracy. The skip connections helped the model learn features faster and generalize slightly better than the non-residual networks, though the gap between training and validation metrics still indicates overfitting in later epochs.
-![ResNet-18 Performance](results/resnet18_plot.png)
+![ResNet-18 Performance](results/ResNet_18_plot.png)
 
 ### 2. VGG-13
 VGG-13 shows a steady increase in training accuracy, but the validation accuracy flattens out around 57%. The capacity of VGG-13 is very high, making it highly susceptible to overfitting without aggressive regularization techniques.
-![VGG-13 Performance](results/vgg13_plot.png)
+![VGG-13 Performance](results/VGG-13_plot.png)
 
 ### 3. AlexNet
 Similar to VGG-13, AlexNet quickly learns the training set. The validation loss curve explicitly shows the point where the model stops generalizing and starts memorizing the noise in the training data.
-![AlexNet Performance](results/alexnet_plot.png)
+![AlexNet Performance](results/AlexNet_plot.png)
 
 *Future Improvements to mitigate overfitting could include implementing advanced Data Augmentation (e.g., MixUp, Cutout), increasing Dropout rates, or using pre-trained weights (Transfer Learning).*
 
