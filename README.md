@@ -1,54 +1,65 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 52aafd6 (add Transfer Learning)
 ## Overview
-This repository is a project-based educational endeavor focused on implementing, training, and comparing classic Deep Learning architectures. The primary goal of this project is to gain a hands-on understanding of the evolution of Convolutional Neural Networks (CNNs) by applying them to the CIFAR-100 dataset. 
+This repository is a hands-on deep learning project focused on implementing, training, and benchmarking CNN architectures on **CIFAR-100**. The project transitions from **training foundational models from scratch** to leveraging **Transfer Learning** with modern pretrained networks. 
 
-A key technical aspect of this project involves an image preprocessing pipeline where the original 32x32 images are resized to 224x224 to properly feed into these standard architectures, simulating real-world data transformation challenges.
+A central focus is analyzing training dynamics, including the trade-offs between model capacity, generalization, and the specific challenges of low-resolution image classification.
 
-## Models Implemented
-The following foundational architectures have been implemented from scratch using TensorFlow and Keras:
-- **AlexNet**: The pioneering deep CNN architecture that sparked the modern deep learning era.
-- **VGG-13**: A deeper network demonstrating the effectiveness of stacked small (3x3) convolutional filters.
-- **ResNet-18**: A deep residual network utilizing skip connections to effectively train deeper models and solve the vanishing gradient problem.
+## Models & Strategy
 
-## Dataset and Preprocessing
-- **Dataset**: [CIFAR-100](https://www.cs.toronto.edu/~kriz/cifar.html) (100 classes, 600 images per class)
-- **Preprocessing**: 
-  - Images are upscaled from their native `32x32` resolution to `224x224`.
-  - Normalization and standard scaling applied for stable training.
+### 1) Training from Scratch (Baseline)
+To study the evolution of CNNs, the following were implemented:
+- **ResNet-18**: Utilizing residual connections to stabilize deep optimization.
+- **VGG-13**: Studying depth and capacity trade-offs through stacked 3×3 convolutions.
+- **AlexNet**: A classic baseline to evaluate progress in CNN design.
 
-## Results and Comparison
-The models were trained and evaluated based on their Validation Accuracy. The residual connections in ResNet-18 allowed it to capture more complex patterns and outperform the earlier architectures.
+### 2) Transfer Learning (Optimization)
+- **EfficientNetV2**: Employed as a pretrained feature extractor to improve generalization and leverage robust representations learned from ImageNet.
 
-| Model | Best Validation Accuracy |
-| :--- | :---: |
-| **ResNet-18** | **63.16%** |
-| **VGG-13** | 57.03% |
-| **AlexNet** | 56.97% |
+## Dataset & Adaptive Pipeline
+- **Dataset**: [CIFAR-100](https://www.cs.toronto.edu/~kriz/cifar.html) (100 classes, 50,000 training / 10,000 test images).
+- **Preprocessing Pipeline**: 
+  - **The 32×32 → 224×224 Trade-off**: Images were upscaled to align with standard ImageNet-style input requirements. While this ensures architectural compatibility, it acknowledges that upscaling does not recover lost spatial details but allows the model to leverage pretrained filters effectively.
+  - **Normalization**: Pixel values rescaled to [0, 1] and normalized using mean/std statistics for stable training.
+
+## Training Setup & Techniques
+- **Mixed-Precision Training (16-bit)**: Implemented for VGG-13 to manage higher memory consumption and optimize training speed.
+- **Dynamic Optimization**: Implemented **Early Stopping** and **ReduceLROnPlateau** (Learning Rate Scheduling) to manage convergence.
+- **Metric**: Evaluated primarily via **Top-1 Validation Accuracy**.
+
+## Results & Analysis
+
+| Strategy | Architecture | Best Val Acc |
+| :--- | :--- | :---: |
+| **Transfer Learning** | **EfficientNetV2** | **77.39%** |
+| From Scratch | ResNet-18 | 63.16% |
+| From Scratch | VGG-13 | 57.03% |
+| From Scratch | AlexNet | 56.97% |
+
+**Key Insight:** Large-capacity models (like ResNet/VGG) trained from scratch on low-resolution images tend to **fit the training set too well**, leading to generalization gaps. **Transfer Learning** provides a superior inductive bias, allowing the network to generalize far better even with upscaled inputs.
 
 ---
 
-## Performance Analysis & Training Plots
+## Performance Visualization
 
-Below are the training history plots (Accuracy and Loss) for each architecture. A common observation across all models is the presence of **Overfitting**. 
+### EfficientNetV2 (Transfer Learning)
+![EfficientNetV2 Performance](results/efficientnet_v2_plot.png)
 
-Because these are large capacity models trained on CIFAR-100 (which has only 500 training images per class), the models eventually memorize the training data (training accuracy approaches high values, and training loss approaches zero), while the validation accuracy plateaus and validation loss begins to increase. This is a classic Deep Learning challenge.
+### ResNet-18 / VGG-13 / AlexNet
 
-### 1. ResNet-18
-ResNet-18 achieved the highest validation accuracy. The skip connections helped the model learn features faster and generalize slightly better than the non-residual networks, though the gap between training and validation metrics still indicates overfitting in later epochs.
 ![ResNet-18 Performance](results/ResNet_18_plot.png)
-
-### 2. VGG-13
-VGG-13 shows a steady increase in training accuracy, but the validation accuracy flattens out around 57%. The capacity of VGG-13 is very high, making it highly susceptible to overfitting without aggressive regularization techniques.
 ![VGG-13 Performance](results/VGG-13_plot.png)
+![AlexNet Performance](results/AlexNet_png.png)
 
-### 3. AlexNet
-Similar to VGG-13, AlexNet quickly learns the training set. The validation loss curve explicitly shows the point where the model stops generalizing and starts memorizing the noise in the training data.
-![AlexNet Performance](results/AlexNet_plot.png)
+## Future Work
+- **Fine-tuning**: Unfreezing top blocks of EfficientNetV2 with a **lower learning rate** to preserve pretrained features while adapting to CIFAR-100.
+- **Advanced Augmentation**: Implementing MixUp or RandAugment to combat overfitting in from-scratch models.
+- **Regularization**: Exploring Label Smoothing and Weight Decay tuning.
 
-*Future Improvements to mitigate overfitting could include implementing advanced Data Augmentation (e.g., MixUp, Cutout), increasing Dropout rates, or using pre-trained weights (Transfer Learning).*
-
-## Technologies Used
-- **Python**
-- **TensorFlow / Keras** (including Mixed Precision training)
-- **Jupyter Notebook**
-- **Matplotlib** (for performance visualization)
+## Tech Stack
+- Python
+- TensorFlow / Keras
+- Scikit-Learn (Model selection & splitting)
+- Matplotlib
