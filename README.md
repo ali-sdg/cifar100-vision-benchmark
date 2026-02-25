@@ -1,7 +1,4 @@
-<<<<<<< HEAD
 
-=======
->>>>>>> 52aafd6 (add Transfer Learning)
 ## Overview
 This repository is a hands-on deep learning project focused on implementing, training, and benchmarking CNN architectures on **CIFAR-100**. The project transitions from **training foundational models from scratch** to leveraging **Transfer Learning** with modern pretrained networks. 
 
@@ -45,13 +42,21 @@ To study the evolution of CNNs, the following were implemented:
 ## Performance Visualization
 
 ### EfficientNetV2 (Transfer Learning)
+
 ![EfficientNetV2 Performance](results/efficientnet_v2_plot.png)
 
-### ResNet-18 / VGG-13 / AlexNet
+### ResNet-18
 
 ![ResNet-18 Performance](results/ResNet_18_plot.png)
+
+### VGG-13
+
 ![VGG-13 Performance](results/VGG-13_plot.png)
-![AlexNet Performance](results/AlexNet_png.png)
+
+### AlexNet
+
+![AlexNet Performance](results/AlexNet_plot.png)
+
 
 ## Future Work
 - **Fine-tuning**: Unfreezing top blocks of EfficientNetV2 with a **lower learning rate** to preserve pretrained features while adapting to CIFAR-100.
